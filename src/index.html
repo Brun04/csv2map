@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>CSV to Map</title>
+		<link rel="icon" href="assets/csv2map.svg">
+        <link rel="stylesheet" href="csvgeocoder.css">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js" integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og==" crossorigin=""></script>
+        <script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.js"></script>
+		<script src="PapaParse-5.0.2/papaparse.min.js"></script>
+        <script src="csvgeocoder.js"></script>
+		<meta http-equiv="Access-Control-Allow-Origin" content="http://api-adresse.data.gouv.fr/search/">		
+    </head>
+    <body>
+		<!-- Navigation bar -->
+		<nav class="navbar">
+			<div class="navbar-content">
+				<div class="navbar-home">
+					<a href=""><img src="assets/csv2map.svg"> CSV2MAP</a>
+					<div class="navbar-burger" data-target="navbarMenu">
+						<img src="assets/burgerWhite.svg" id="burger-open" class="is-active">
+						<img src="assets/closeWhite.svg" id="burger-close">
+						<div class="navbar-burger-items"></div>
+					</div>
+				</div>
+				<div class="navbar-menu" id="navbarMenu" >
+					<a id="upload-file"><img src="assets/uploadWhite.svg"> Upload CSV file</a>
+					<a id="display-map"><img src="assets/map.svg"> Display map</a>
+					<a id="geodownload"><img src="assets/downloadWhite.svg"> Download GeoCSV</a>
+				</div>
+			</div>
+        </nav>
+
+		<!-- Main -->
+		<div id="map-div" class="div-map is-displayed">
+			<img src="assets/closeWhite.svg" id="hide-map">
+			<div id="map"></div>
+		</div>
+        <div id="grid-tab" class="table-list ag-theme-alpine-dark"></div>
+        
+		<div id="tab-opt-popup" class="popup"><img src="assets/closeWhite.svg" id="close-popup-opt"><h2>COLUMN OPTIONS</h2>
+			<table id="geocoder-options" class="center">
+				<tr><th>Column</th><th>Geocoding</th><th>Content</th></tr>
+			</table>
+			<button id="btn-geocode">Geocode</button>
+		</div>
+		<!-- Footer -->
+		<footer class="text-center">
+			<p>&copy Bruno Verchère 2020</p>
+		</footer>
+    </body>
+</html>
