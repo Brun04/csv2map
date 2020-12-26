@@ -220,7 +220,6 @@ function geocode(cells, row, gridOptions, geocoderData){
 				// Add to the table
 				gridOptions.api.applyTransaction({add: [row]});
 			}else{
-				console.warn("No result found with "+tabData[idx]);
 				row['lng']= null;
 				row['lat']= null;
 				row['label']='';
