@@ -2,8 +2,8 @@ body{
   font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
   font-size: 1em;
   background-color: #eeeeee;
-	color: #000000;
-	margin: 0px 0px 0px 0px;	
+  color: #000000;
+  margin: 0px 0px 0px 0px;	
 }
 
 footer{
@@ -11,7 +11,9 @@ footer{
   bottom: 0;
   color: #fff;
   width: 100%;
-  min-height: 2.5em;
+  position: relative;
+  padding: 2px 0px 2px 0px;
+  top: 52px
 }
 
 footer p{
@@ -20,12 +22,29 @@ footer p{
 }
 
 table.center {
-	margin-left:auto; 
-	margin-right:auto;
+  margin-left:auto; 
+  margin-right:auto;
 }
 
 .btn{
-	border: solid 1px rounded;
+  border: 1px solid #121212;
+  border-radius: 10%;
+  color: #ffffff;
+  min-height: 2em;
+  vertical-align: middle;
+  
+}
+
+.btn-success{
+  background-color: #22bb22;
+}
+
+.btn-close{
+  background-color: #ee0000;
+}
+
+.btn-icon{
+  max-height: 1em;
 }
 
 .div-map{
@@ -35,16 +54,22 @@ table.center {
 	display: none;
 }
 
-.div-map.is-displayed{
+.div-map.is-active{
 	display: block;
+}
+
+.icon{
+  height: 2rem;
+  width: 2rem;
 }
 
 .navbar {
   overflow: hidden;
   background-color: #000;
-  /*position: fixed;*/
+  position: fixed;
   top: 0;
   width: 100%;
+  z-index: 9999;
 }
 
 .navbar a {
@@ -60,13 +85,12 @@ table.center {
   color: black;
 }
 
-.navbar-burger{
+.navbar a.is-disable{
   display: none;
-  height: 3em;
 }
 
-.navbar-burger img{
-  display: none;
+.navbar-end{
+  cursor: pointer;
 }
 
 .navbar img{
@@ -75,76 +99,133 @@ table.center {
 }
 
 .navbar-menu{
+  max-height: calc(100vh - 3.25rem);
+  overflow: auto;
   float: right;
 }
 
 @media screen and (max-width: 700px) {
-  .navbar a:not(:first-child) {display: none;}
   .navbar-burger {
-    position: absolute;
-    top: 0.5%;
-    right: 2%;
+    color: #fff;
+    cursor: pointer;
     display: block;
+    position: relative;
+    height: 3.25rem;
+    width: 3.25rem;
+    margin-left: auto;
   }
-  .navbar-burger img.is-active{
-    display: inline;
-    max-height: 2em;
+
+  .navbar-burger span{
+    display: block;
+    height: 1px;
+    width: 16px;
+    left: calc(50% - 8px);
+    position: absolute;
+    background-color: currentColor;
+    transform-origin: center;
+    transition-duration: 85ms;
+    transition-property: background-color, opacity, transform;
+    transition-timing-function: ease-out;
+  }
+
+  .navbar-burger span:nth-child(1){
+    top: calc(50% - 6px);
+  }
+
+  .navbar-burger span:nth-child(2){
+    top: calc(50% - 1px);
+  }
+
+  .navbar-burger span:nth-child(3){
+    top: calc(50% + 4px);
+  }
+
+  .navbar-burger.is-active span:nth-child(1){
+    transform: translateY(5px) rotate(45deg);
+  }
+
+  .navbar-burger.is-active span:nth-child(2){
+    opacity: 0;
+  }
+
+  .navbar-burger.is-active span:nth-child(3){
+    transform: translateY(-5px) rotate(-45deg);
   }
   
   .navbar-menu{
 	  display: none;
   }
+
+  .navbar-menu.is-active{
+    display: block;
+  }
 }
 
 .popup{
   display: none;
-	position: absolute;
-	z-index: 500;
-	background-color: #aaaaaa;
+  background-color: #aaaaaa;
   border: 1px solid #000000;
+  padding: 2px 2px 2px 2px;
+  position: absolute;
+  z-index: 500;
 }
 
-.popup.is-displayed{
+.popup.is-active{
    display: block;
 }
 
 .table-list{
+  display: none;
+}
+
+.table-list.is-active{
   height: 80vh;
   width: 100%;
+  display: block;
 }
 
 .text-center{
   text-align: center;
 }
 
+#main{
+  position: relative;
+  top: 52px;
+}
 
 #map{
   height: 500px;
   width: 90%;
   position: relative;
   left: 4%;
-	top: 1%;
+  top: 1%;
 }
 
 #hide-map{
   position: relative;
-  right: 0;
-  top: 0;
+  left: 2.5px;
+  top: 2.5px;
   z-index: 505;
 }
 
-#grid-tab{
+@media screen and (max-height: 600px) {
+  #map{
+    height: 400px;
+  }
+}
+
+#gridTab{
   padding-top: 2%;
 }
 
-#tab-opt-popup{
-	text-align: center;
-	width: 33%;
-  height: 350px;
+#optionsPopup{
+  width: 33%;
+  height: 400px;
   left: 33%;
   top: 50px;
 }
 
-#tab-opt-popup button{
-	margin-bottom: 2%;
+#optionsPopup .buttons{
+  margin-top: 1.5%;
+  margin-bottom: 1.5%;
 }

@@ -16,39 +16,65 @@
     </head>
     <body>
 		<!-- Navigation bar -->
+		<script>
+            document.addEventListener('DOMContentLoaded', () => {const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+            if ($navbarBurgers.length > 0) {$navbarBurgers.forEach( el => {el.addEventListener('click', () => {const target = el.dataset.target;const $target = document.getElementById(target);el.classList.toggle('is-active');$target.classList.toggle('is-active');});});}});
+        </script>
 		<nav class="navbar">
 			<div class="navbar-content">
 				<div class="navbar-home">
 					<a href=""><img src="assets/csv2map.svg"> CSV2MAP</a>
-					<div class="navbar-burger" data-target="navbarMenu">
-						<img src="assets/burgerWhite.svg" id="burger-open" class="is-active">
-						<img src="assets/closeWhite.svg" id="burger-close">
-						<div class="navbar-burger-items"></div>
-					</div>
+					<sapn class="navbar-burger" data-target="navbarMenu">
+						<span></span>
+						<span></span>
+						<span></span>
+						<span></span>
+					</span>
 				</div>
-				<div class="navbar-menu" id="navbarMenu" >
-					<a id="upload-file"><img src="assets/uploadWhite.svg"> Upload CSV file</a>
-					<a id="display-map"><img src="assets/map.svg"> Display map</a>
-					<a id="geodownload"><img src="assets/downloadWhite.svg"> Download GeoCSV</a>
+				<div class="navbar-menu" id="navbarMenu">
+					<div class="navbar-end">
+						<a id="fileUploader"><img src="assets/uploadWhite.svg"> Upload CSV file<input type="file" id="files" accept="text/csv" style="display: none;"></a>
+						<a id="mapDisplayer"><img src="assets/map.svg"> Display map</a>
+						<a id="geoDownloader" class="is-disable"><img src="assets/downloadWhite.svg"> Download GeoCSV</a>
+					</div>
 				</div>
 			</div>
         </nav>
 
 		<!-- Main -->
-		<div id="map-div" class="div-map is-displayed">
-			<img src="assets/closeWhite.svg" id="hide-map">
-			<div id="map"></div>
+		<div id="main">
+			<div id="map-div" class="div-map is-active">
+				<img src="assets/closeWhite.svg" id="hide-map" class="icon">
+				<div id="map"></div>
+			</div>
+			<div id="gridTab" class="table-list ag-theme-alpine-dark"></div>
+			
+			<div id="optionsPopup" class="popup">
+				<h2 class="text-center">OPTIONS</h2>
+				<div>
+					<h3>Columns:</h3>
+					<table class="center text-center">
+						<thead>
+							<tr><th>CSV<br>column</th><th>Geo<br>column</th><th>Map popup<br>content</th></tr>
+						</thead>
+						<tbody id="geocodingOptions"></tbody>
+					</table>
+				</div>
+				<div>
+					<h3>Geocoder:</h3>
+					<div id="geocodersInput"></div>
+				</div>
+				
+				<div class="text-center buttons">
+					<button id="geocoderBtn" class="btn btn-success">Geocode</button>
+					<button id="optionsClose" class="btn btn-close"><img src="assets/closeWhite.svg" class="btn-icon"> Close</button>
+				</div>
+				
+			</div>
 		</div>
-        <div id="grid-tab" class="table-list ag-theme-alpine-dark"></div>
-        
-		<div id="tab-opt-popup" class="popup"><img src="assets/closeWhite.svg" id="close-popup-opt"><h2>COLUMN OPTIONS</h2>
-			<table id="geocoder-options" class="center">
-				<tr><th>Column</th><th>Geocoding</th><th>Content</th></tr>
-			</table>
-			<button id="btn-geocode">Geocode</button>
-		</div>
+		
 		<!-- Footer -->
-		<footer class="text-center">
+		<footer class="footer text-center">
 			<p>&copy Bruno Verchère 2020</p>
 		</footer>
     </body>
