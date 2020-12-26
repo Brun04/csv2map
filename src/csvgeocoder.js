@@ -184,51 +184,51 @@ function getJSONValue(obj, idx, keys){
 }
 
 function geocode(cells, row, gridOptions, geocoderData){
-	var adress = ""; var schema = geocoderData.schema;
+	var address = ""; var schema = geocoderData.schema;
 	if(typeof tabData != 'undefined' && selectedCol['geocoding'].length > 0){
 		for(j=0;j<selectedCol['geocoding'].length;j++){
-			if(cells[selectedCol['geocoding'][j]] != ''){adress+=cells[selectedCol['geocoding'][j]]+" ";}
+			if(cells[selectedCol['geocoding'][j]] != ''){address+=cells[selectedCol['geocoding'][j]]+" ";}
 		}
-		fetch(geocoderData.url+adress.slice(0, adress.length-1))
-		.then(r=>r.json())
-		.then(r=>{
-			var imax=0;var scoremax=0;var feature;
-			if(r[schema.results].length > 0){
-				// Get the feature
-				if(geocoderData.schema.score !== null){
-					for(let k=0; k < r[schema.results].length; k++){
-						var current = getJSONValue(r[schema.results][k], 0, schema.score);
-						if(current > scoremax){ scoremax = current; imax = k;}
-					}	
+		if(address.length > 0){
+			fetch(geocoderData.url+address.slice(0, address.length-1))
+			.then(r=>r.json())
+			.then(r=>{
+				var imax=0;var scoremax=0;var feature;
+				if(r[schema.results].length > 0){
+					// Get the feature
+					if(geocoderData.schema.score !== null){
+						for(let k=0; k < r[schema.results].length; k++){
+							var current = getJSONValue(r[schema.results][k], 0, schema.score);
+							if(current > scoremax){ scoremax = current; imax = k;}
+						}	
+					}
+					feature = r[schema.results][imax];
+					// Process with the feature
+					row['lng']= getJSONValue(feature, 0, schema.lng);
+					row['lat']= getJSONValue(feature, 0, schema.lat);
+					row['label']= getJSONValue(feature, 0, schema.label);
+					if(geocoderData.schema.score !== null){
+						row['score'] = getJSONValue(feature, 0, schema.score).toFixed(3);
+					}
+					// Set marker content
+					var content = "";
+					for(k=0;k<selectedCol['content'].length;k++){
+						content+="<p><strong>"+selectedCol['content'][k]+"</strong>: "+cells[selectedCol['content'][k]]+"</p>";
+					}
+					const marker = L.marker([row['lat'], row['lng']], {title: cells[selectedCol['content'][0]]}).bindPopup(content)
+					markers.addLayer(marker);markers.addTo(map);
+					// Add to the table
+					gridOptions.api.applyTransaction({add: [row]});
+				}else{
+					row['lng']= null;
+					row['lat']= null;
+					row['label']='';
+					row['score']=0;	
 				}
-				feature = r[schema.results][imax];
-				// Process with the feature
-				row['lng']= getJSONValue(feature, 0, schema.lng);
-				row['lat']= getJSONValue(feature, 0, schema.lat);
-				row['label']= getJSONValue(feature, 0, schema.label);
-				if(geocoderData.schema.score !== null){
-					row['score'] = getJSONValue(feature, 0, schema.score).toFixed(3);
-				}
-				// Set marker content
-				var content = "";
-				for(k=0;k<selectedCol['content'].length;k++){
-					content+="<p><strong>"+selectedCol['content'][k]+"</strong>: "+cells[selectedCol['content'][k]]+"</p>";
-				}
-				console.log(content);
-				const marker = L.marker([row['lat'], row['lng']], {title: cells[selectedCol['content'][0]]}).bindPopup(content)
-				markers.addLayer(marker);markers.addTo(map);
-				// Add to the table
-				gridOptions.api.applyTransaction({add: [row]});
-			}else{
-				row['lng']= null;
-				row['lat']= null;
-				row['label']='';
-				row['score']=0;	
-			}
-			closeOptPopup();
-			document.querySelector('#geoDownloader').disabled = false;
-			
-		})
+				closeOptPopup();
+				document.querySelector('#geoDownloader').disabled = false;	
+			})
+		}
 	}
 }
 
