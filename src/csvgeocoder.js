@@ -31,6 +31,13 @@ function init(){
 		})
 }
 
+/**
+ * Create a HTML radio input for a geocoder with its label.
+ * @since 0.1.0
+ * @param string  shortName  The geocoder short name.
+ * @param string  name 	     The full name of the geocoder.
+ * @return [HTMLNode, HTMLNode]  A pair of an input and its label.
+ */
 function createGeoRadioInput(shortName, name){
 	var input = document.createElement('input');
 	input.type = 'radio';
@@ -42,6 +49,10 @@ function createGeoRadioInput(shortName, name){
 	return [input, label];
 }
 
+/**
+ * Handle the selected files for upload by calling the PapaParse library.
+ * @since 0.1.0
+ */
 function handleFiles(){
 	if(!this.files.length){
 		alert('No files given');
@@ -55,12 +66,23 @@ function handleFiles(){
 	}
 }
 
+/**
+ * Create a new row in the ag-grid.
+ * @since 0.1.0
+ * @param Object  tabHeader  The table header with the column names.
+ * @return Object  An empty ag-grid row.
+ */
 function newRow(tabHeader){
     var row = {};
     tabHeader.forEach(col => {row[col['field']]= '';});
     return row;
 }
 
+/**
+ * Get the geocoder chosen by the user.
+ * @since 0.1.0
+ * @return Object  The configurations of the selected geocoder.
+ */
 function getGeocoder(){
 	var geocodersInput = document.querySelectorAll('input[name="geocoder"]');
 	for(let i=0; i < geocodersInput.length; i++){
@@ -69,13 +91,21 @@ function getGeocoder(){
 	return geocoders['ban'];
 }
 
+/**
+ * Display the geocoding options to the user from the parsed CSV file and build the ag-grid table.
+ * @since 0.1.0
+ * @param Object  results  The parsed data from a CSV file.
+ */
 function displayHTMLTable(results){
     tabData = results.data;
 	setTabOptions();
 	document.querySelector('input[value="ban"]').checked = true;
+	document.querySelector('#geocoderBtn').disabled=true;
 	document.querySelector('#optionsPopup').classList.add('is-active');
 	document.querySelector('#optionsClose').addEventListener('click', closeOptPopup);
 	document.querySelector('#geocoderBtn').addEventListener('click', function(){
+		document.querySelector('#geocoderBtn').disabled=true;
+		closeOptPopup();
 		// Get selected geocoder
 		var geocoderData = getGeocoder();
 		// Init grid
@@ -121,16 +151,29 @@ function displayHTMLTable(results){
 			rowData.push(row);
 			geocode(cells, row, gridOptions, geocoderData);
 		}
+		document.querySelector('#geoDownloader').disabled = false;
 	});
 
 	
 }
 
+/**
+ * Close the popup.
+ * @since 0.1.0
+ */
 function closeOptPopup(){
 	document.querySelector('#optionsPopup').classList.remove('is-active');
 	document.querySelector('#optionsClose').removeEventListener('click', closeOptPopup);
 }
 
+/**
+ * Create a checkbox input for an option.
+ * @since 0.1.0
+ * @param string  value  The option name associed with the checkbox.
+ * @param string    i    The numero of the checkbox.
+ * @param string  type   The option type.
+ * @return HTMLNode  The created checkbox.
+ */
 function newCheckbox(value, i, type){
 	let bx = document.createElement('input');
 	bx.type = 'checkbox';
@@ -140,6 +183,13 @@ function newCheckbox(value, i, type){
 	return bx;
 }
 
+/**
+ * Create a new row for the geocoding/map popup options.
+ * @since 0.1.0
+ * @param string  key  The option name.
+ * @param string   i   The numero of the row.
+ * @return HTMLNode  A HTML table row.
+ */
 function newOptRow(key, i){
 	var r = document.createElement('tr');
 	// Label
@@ -157,6 +207,10 @@ function newOptRow(key, i){
 	return r;
 }
 
+/**
+ * Set the options table for the geocoding/map content.
+ * @since 0.1.0
+ */
 function setTabOptions(){
 	if(typeof tabData != 'undefined'){
 		var optTable = document.querySelector('#geocodingOptions');
@@ -169,6 +223,12 @@ function setTabOptions(){
 	}
 }
 
+/**
+ * Slot called when an option checkbox state change.
+ * If no checkbox is checked for the geocoding options, the user cannot geocode the data.
+ * @since 0.1.0
+ * @param Object  target  The changed checkbox.
+ */
 function checkboxChange(target){
 	if(selectedCol[target.name.split('check')[0]].includes(target.value)){
 		const idx = selectedCol[target.name.split('check')[0]].indexOf(target.value);
@@ -176,13 +236,32 @@ function checkboxChange(target){
 	}else{
 		selectedCol[target.name.split('check')[0]].push(target.value);
 	}
+	if(selectedCol['geocoding'].length > 0){document.querySelector('#geocoderBtn').disabled=false;}
+	else{document.querySelector('#geocoderBtn').disabled=true;}
 }
 
+/**
+ * Get a specific value in a JSON object from an index and a list of JSON keys.
+ * @since 0.1.0
+ * @param Object   obj   The JSON object. 
+ * @param int      idx   The start index of the search.
+ * @param [string] keys  The list of keys to look for in the JSON.
+ * @return undefined The specific value sought.
+ */
 function getJSONValue(obj, idx, keys){
   if(idx == keys.length-1){ return obj[keys[idx]]; }
   return getJSONValue(obj[keys[idx]], idx+1, keys);
 }
 
+/**
+ * Geocode one line of the original CSV file with a selected geocoder.
+ * Fill the table and the map with the returned geodata from API.
+ * @since 0.1.0
+ * @param Object cells          The original data from CSV.
+ * @param Object row  	 	    The row to fill with the geodata in the table.
+ * @param Object gridOptions    The ag-grid object.
+ * @param Object geocoderData   The configurations of the geocoder.
+ */
 function geocode(cells, row, gridOptions, geocoderData){
 	var address = ""; var schema = geocoderData.schema;
 	if(typeof tabData != 'undefined' && selectedCol['geocoding'].length > 0){
@@ -193,45 +272,54 @@ function geocode(cells, row, gridOptions, geocoderData){
 			fetch(geocoderData.url+address.slice(0, address.length-1))
 			.then(r=>r.json())
 			.then(r=>{
-				var imax=0;var scoremax=0;var feature;
-				if(r[schema.results].length > 0){
-					// Get the feature
-					if(geocoderData.schema.score !== null){
-						for(let k=0; k < r[schema.results].length; k++){
-							var current = getJSONValue(r[schema.results][k], 0, schema.score);
-							if(current > scoremax){ scoremax = current; imax = k;}
-						}	
+				if(r.error !== 'undefined'){
+					var imax=0;var scoremax=0;var feature;
+					var results = getJSONValue(r, 0, schema.results);
+					if(results !== undefined && results.length > 0){
+						// Get the feature
+						if(geocoderData.schema.score !== null){
+							for(let k=0; k < results.length; k++){
+								var current = getJSONValue(results[k], 0, schema.score);
+								if(current > scoremax){ scoremax = current; imax = k;}
+							}	
+						}
+						feature = results[imax];
+						// Process with the feature
+						row['lng']= getJSONValue(feature, 0, schema.lng);
+						row['lat']= getJSONValue(feature, 0, schema.lat);
+						row['label']= getJSONValue(feature, 0, schema.label);
+						if(geocoderData.schema.score !== null){
+							row['score'] = getJSONValue(feature, 0, schema.score).toFixed(3);
+						}
+						if(row['lat'] !== undefined && row['lng'] !== undefined){
+							// Set marker content
+							var content = "";
+							for(k=0; k<selectedCol['content'].length; k++){
+								content+="<p><strong>"+selectedCol['content'][k]+"</strong>: "+cells[selectedCol['content'][k]]+"</p>";
+							}
+							const marker = L.marker([row['lat'], row['lng']], {title: cells[selectedCol['content'][0]]})
+							if(k > 0){marker.bindPopup(content)}
+							markers.addLayer(marker);markers.addTo(map);
+						}
+						// Add to the table
+						gridOptions.api.applyTransaction({add: [row]});
+					}else{
+						row['lng']= null;
+						row['lat']= null;
+						row['label']='';
+						row['score']=0;	
 					}
-					feature = r[schema.results][imax];
-					// Process with the feature
-					row['lng']= getJSONValue(feature, 0, schema.lng);
-					row['lat']= getJSONValue(feature, 0, schema.lat);
-					row['label']= getJSONValue(feature, 0, schema.label);
-					if(geocoderData.schema.score !== null){
-						row['score'] = getJSONValue(feature, 0, schema.score).toFixed(3);
-					}
-					// Set marker content
-					var content = "";
-					for(k=0;k<selectedCol['content'].length;k++){
-						content+="<p><strong>"+selectedCol['content'][k]+"</strong>: "+cells[selectedCol['content'][k]]+"</p>";
-					}
-					const marker = L.marker([row['lat'], row['lng']], {title: cells[selectedCol['content'][0]]}).bindPopup(content)
-					markers.addLayer(marker);markers.addTo(map);
-					// Add to the table
-					gridOptions.api.applyTransaction({add: [row]});
-				}else{
-					row['lng']= null;
-					row['lat']= null;
-					row['label']='';
-					row['score']=0;	
 				}
-				closeOptPopup();
-				document.querySelector('#geoDownloader').disabled = false;	
+					
 			})
 		}
 	}
 }
 
+/**
+ * Display the map to the user and set the view to the markers if the layer is not empty.
+ * @since 0.1.0
+ */
 function displayMap(event){
 	if(typeof event != 'undefined'){event.preventDefault();}
 	let mapDiv = document.querySelector('#map-div');
@@ -242,12 +330,20 @@ function displayMap(event){
     document.getElementById("hide-map").addEventListener("click", hideMap);
 }
 
+/**
+ * Hide map from the user.
+ * @since 0.1.0
+ */
 function hideMap(){
     document.getElementById("map-div").classList.remove("is-active");
     document.getElementById("hide-map").removeEventListener("click", hideMap);
 	document.getElementById("mapDisplayer").innerHTML = '<img src="assets/map.svg"> Display map';
 }
 
+/**
+ * Export the original data, plus the geodata as a new CSV file.
+ * @since 0.1.0
+ */
 function exportDataAsCsv(e){
 	e.preventDefault();
 	var params = {allColumns: true};
