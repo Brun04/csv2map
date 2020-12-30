@@ -8,7 +8,7 @@ The project uses the library **PapaParse** to parse a CSV file. You can download
 
 ## Installation
 
-Rename the file `geocoders.json.ini` in `geocoders.json`. Open it and replace the pattern *YOUR_ACCESS_KEY* when you have access to a key for the wanted geocoder. Three geocoders are parametred and proposed:
+Rename the file `geocoders.json.ini` in `geocoders.json`. Open it and replace the pattern *YOUR_ACCESS_KEY* when you have access to a key for the wanted geocoder. Three geocoders are configured and proposed:
 
 |                                API                               |                   Sign up required                  | Key required |           Comment          |
 |:----------------------------------------------------------------:|:---------------------------------------------------:|:------------:|:--------------------------:|
@@ -17,7 +17,17 @@ Rename the file `geocoders.json.ini` in `geocoders.json`. Open it and replace th
 |     [Positionstack](https://positionstack.com/documentation)     |                         Yes                         |      Yes     |                            |
 
 
+## Usage
 
+Upload a CSV file from your device, by clicking on the button **Upload CSV file** on the top right of the page. Choose the wanted file in your file system and open it.
+A popup with the options is displayed as in the figure below:
+
+![Figure options](./img/options_popup.jpg)
+
+At least, one of the column have to be used for the geocoding, otherwise you cannot geocode your file.
+
+The results are displayed in the table and on the map. If no position is found for a given geocoder, the field *latitude* and *longitude* are empty.
+If the results are satisfactory then you have the possibility to download those by clicking of the newly button on the top right **Download GeoCSV**.
 
 ## Author
 
