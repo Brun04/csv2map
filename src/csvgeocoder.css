@@ -168,6 +168,7 @@ table.center {
   padding: 2px 2px 2px 2px;
   position: absolute;
   z-index: 500;
+  min-height: 400px;
 }
 
 .popup.is-active{
